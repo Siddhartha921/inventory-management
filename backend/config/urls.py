@@ -1,0 +1,46 @@
+
+from django.contrib import admin
+from django.urls import path, include
+
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
+urlpatterns = [
+    # Django Admin
+    path("admin/", admin.site.urls),
+
+    # JWT Authentication
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+
+    # Authentication APIs
+    path("api/auth/", include("accounts.urls")),
+
+    # Inventory APIs
+    path("api/", include("inventory.urls")),
+
+    # Supplier APIs
+    path("api/", include("suppliers.urls")),
+
+    # API Documentation
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
+    path(
+        "api/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
+    ),
+]
